@@ -1,7 +1,10 @@
 package com.olta.fundManager.TransactionService.entities;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 
 @Entity
@@ -28,19 +31,20 @@ public class Transaction {
 	@Column(name = "month_counter")
     private Integer monthCounter;
 
-	@Column(name = "interest_amou nt")
-    private Long interestAmount;
+	@Column(name = "interest_amount")
+    private BigDecimal interestAmount = BigDecimal.ZERO;
 
     @Column(name = "is_interestAmt_paid")
     private Character isInterestAmtPaid = 'N';
 
     @Column(name = "loan_returned")
-    private Long loanReturned;
+    private BigDecimal loanReturned = BigDecimal.ZERO;
 
     @Column(name = "loan_borrowed")
-    private Long loanBorrowed ;
+    private BigDecimal loanBorrowed = BigDecimal.ZERO;
 
     @Column(name = "total_loan ")
-    private Long totalLoan;
+    private BigDecimal totalLoan = BigDecimal.ZERO;
+
 
 }

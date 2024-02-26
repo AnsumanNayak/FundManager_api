@@ -2,6 +2,7 @@ package com.olta.fundManager.MemberService.controller;
 
 import com.olta.fundManager.MemberService.Service.MemberService;
 import com.olta.fundManager.MemberService.entities.Member;
+import com.olta.fundManager.MemberService.model.MemberDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,18 +20,28 @@ public class MemberController {
         return memberService.getAllMembers();
     }
 
-    @GetMapping("/{MemberId}")
-    public Member getMemberById(@PathVariable Long MemberId) {
-        return memberService.getMemberById(MemberId);
+    @GetMapping("/{memberId}")
+    public Member getMemberById(@PathVariable Long memberId) {
+        return memberService.getMemberById(memberId);
+    }
+    @GetMapping("/funds/{fundId}")
+    public List<Member> getMembersByFundId(@PathVariable Long fundId) {
+        return memberService.getMembersByFundId(fundId);
     }
 
     @PostMapping
-    public Member saveMember(@RequestBody Member Member) {
-        return memberService.saveMember(Member);
+    public List<Member> saveMember(@RequestBody List<MemberDTO> members) {
+        return memberService.saveMember(members);
     }
 
-    @DeleteMapping("/{MemberId}")
+    @DeleteMapping("/{memberId}")
     public void deleteMember(@PathVariable Long MemberId) {
         memberService.deleteMember(MemberId);
     }
+
+    @PostMapping("/memberCheck")
+    public boolean isExistingMember(@RequestBody MemberDTO memberDTO){
+        return memberService.isExistingMember(memberDTO);
+    }
+
 }

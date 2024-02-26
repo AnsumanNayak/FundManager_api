@@ -11,7 +11,6 @@ import java.time.LocalDate;
 @Table(name = "member")
 public class Member {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long memberId;
 
@@ -33,8 +32,8 @@ public class Member {
     @Column(name = "eff_end_dt")
     private LocalDate effEndDt;
 
-    @Column(name = "funds")
-    private String[] funds;
+    @Column(name = "fundId")
+    private Long fundId;
 
     @Column(name = "member_gender")
     private String gender;
@@ -54,4 +53,6 @@ public class Member {
     @Column(name = "member_aadharNum")
     private Long aadharNum;
 
+    @Transient
+    private int fundTenure;
 }

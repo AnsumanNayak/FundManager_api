@@ -1,5 +1,6 @@
 package com.olta.fundManager.TransactionService.Exception;
 
+import com.olta.fundManager.TransactionService.model.ApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -14,6 +15,14 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("An unexpected error occurred: " + e.getMessage());
     }
+
+    @ExceptionHandler(TransactionServiceException.class)
+    public ResponseEntity<ApiResponse<Object>> handleCustomException(TransactionServiceException ex) {
+        return new ResponseEntity<>(ApiResponse.builder()
+                .message(ex.getMessage())
+                .success(false).build(), HttpStatus.BAD_REQUEST);
+    }
+
 
     // Add additional exception handling methods as needed
 

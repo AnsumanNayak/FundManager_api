@@ -1,4 +1,4 @@
-package com.olta.fundManager.TransactionService.entities;
+package com.olta.fundManager.TransactionVerificationService.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "transaction_Summary",uniqueConstraints= @UniqueConstraint(name = "uk_fund_member_month",columnNames={"fund_id", "member_id", "month_year"}))
-public class Transaction {
+public class TransactionSummary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "transaction_id")

@@ -30,9 +30,15 @@ public class FundController {
     }
 
     @GetMapping("/admins/{adminId}")
-    public List<Fund> getFundByAdminId(@Nonnull @PathVariable Integer adminId) {
-        return fundService.getFundByAdminId(adminId);
+    public ResponseEntity<ApiResponse<Object>> getFundByAdminId(@Nonnull @PathVariable Integer adminId) {
+        List<Fund> funds= fundService.getFundByAdminId(adminId);
+        if(funds.isEmpty())
+            throw new FundServiceException("No funds found under the admin Id: "+adminId);
+        return new ResponseEntity<>(ApiResponse.builder()
+                .data(funds)
+                .success(true).build(), HttpStatus.FOUND);
     }
+
 
     @PostMapping
     public ResponseEntity<ApiResponse<Object>> saveFund(@Nonnull @RequestBody Fund fund) {
