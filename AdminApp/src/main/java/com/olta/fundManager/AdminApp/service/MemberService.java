@@ -3,6 +3,7 @@ package com.olta.fundManager.AdminApp.service;
 
 import com.olta.fundManager.AdminApp.entities.Member;
 import com.olta.fundManager.AdminApp.model.MemberDTO;
+import com.olta.fundManager.AdminApp.model.TransactionDTO;
 
 import java.util.List;
 import java.util.Set;
@@ -13,6 +14,7 @@ public interface MemberService {
     public Member getMemberById(Long memberId);
     public Set<Member> saveMember(List<MemberDTO> members);
     public void deleteMember(Long memberId);
+    public List<MemberDTO> getMemberTransactionDetails(Long memberId);
 
     public Set<Member> getMembersByFundId(Long fundId);
 

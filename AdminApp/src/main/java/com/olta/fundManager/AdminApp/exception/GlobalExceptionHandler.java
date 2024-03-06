@@ -1,9 +1,9 @@
 package com.olta.fundManager.AdminApp.exception;
 
 
-import com.olta.fundManager.AdminApp.model.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,26 +13,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(com.olta.fundManager.AdminApp.exception.CustomException.class)
-    public ResponseEntity<ApiResponse<Object>> handleCustomException(com.olta.fundManager.AdminApp.exception.CustomException ex) {
+    public ResponseEntity<ProblemDetail> handleCustomException(CustomException ex) {
         log.error("Custom Exception occurred: ",ex);
-        return new ResponseEntity<>(ApiResponse.builder()
-                .message(ex.getMessage())
-                .success(false).build(), HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, ex.getMessage()));
     }
-
-    // Add more exception handlers as needed
-
-    // For handling other exceptions, you can define additional @ExceptionHandler methods
-    // For example:
-    // @ExceptionHandler(OtherException.class)
-    // public ResponseEntity<String> handleOtherException(OtherException ex) {
-    //     return new ResponseEntity<>("Other Exception Occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    // }
 
     // Default handler for unhandled exceptions
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleException(Exception ex) {
+    public ResponseEntity<ProblemDetail> handleException(Exception ex) {
         log.error("Internal Exception occurred: ",ex);
-        return new ResponseEntity<>("An error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ProblemDetail.forStatusAndDetail(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage()));
     }
 }

@@ -13,5 +13,4 @@ import java.util.Set;
 @Repository
 public interface FundRepository extends JpaRepository<Fund,Long> {
     List<Fund> findByAdminId(Integer adminId);
-    Set<Member> findMembersByFundId(Long fundId);
 }

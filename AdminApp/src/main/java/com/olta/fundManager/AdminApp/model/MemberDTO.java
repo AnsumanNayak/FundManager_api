@@ -1,14 +1,14 @@
 package com.olta.fundManager.AdminApp.model;
 
 
-import jakarta.annotation.Nonnull;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MemberDTO {
     private Long memberId;
 
@@ -21,7 +21,7 @@ public class MemberDTO {
     private BigDecimal totalInterest = BigDecimal.ZERO;
 
 
-    private Integer totalPrincipal = 0;
+    private BigDecimal totalPrincipal = BigDecimal.ZERO;
 
 
     private LocalDate effBeginDt;
@@ -49,6 +49,6 @@ public class MemberDTO {
 
     private Long aadharNum;
 
-    private int fundTenure;
+    private Long fundId;
 
 }

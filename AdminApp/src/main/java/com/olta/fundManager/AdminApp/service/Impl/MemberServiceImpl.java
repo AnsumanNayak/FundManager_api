@@ -9,6 +9,7 @@ import com.olta.fundManager.AdminApp.exception.CustomException;
 import com.olta.fundManager.AdminApp.mapper.MemberMapper;
 import com.olta.fundManager.AdminApp.mapper.TransactionMapper;
 import com.olta.fundManager.AdminApp.model.MemberDTO;
+import com.olta.fundManager.AdminApp.model.TransactionDTO;
 import com.olta.fundManager.AdminApp.repository.FundRepository;
 import com.olta.fundManager.AdminApp.repository.MemberRepository;
 import com.olta.fundManager.AdminApp.service.MemberService;
@@ -17,7 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -37,7 +40,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member getMemberById(Long memberId) {
-        return memberRepository.findById(memberId).orElse(null);
+        return memberRepository.findById(memberId).orElseThrow(() -> new CustomException(String.format(AdminAppConstant.MEMBER_NOT_FOUND,AdminAppConstant.MEMBER_ID,memberId)));
     }
 
     @Override
@@ -48,22 +51,20 @@ public class MemberServiceImpl implements MemberService {
             if (!this.isExistingMember(dto)) {
                 Long memberId = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
                 for (Long fundId : dto.getFundIds()) {
-                    Optional<Fund> fundOptional = fundRepository.findById(fundId);
-                    if (fundOptional.isEmpty()) {
-                        throw new CustomException(String.format(AdminAppConstant.FUND_NOT_FOUND, AdminAppConstant.FUND_ID, fundId));
-                    }
+                    fund = fundRepository.findById(fundId).orElseThrow(() -> new CustomException(String.format(AdminAppConstant.FUND_NOT_FOUND, AdminAppConstant.FUND_ID, fundId)));
+
                     Member member = mapper.mapDTOToEntity(dto);
                     member.setMemberId(memberId);
-                    fund = fundOptional.get();
 
-                    for (int i = 1; i <= dto.getFundTenure(); i++) {
+
+                    for (int i = 1; i <= fund.getTenure(); i++) {
                         Transaction transaction = new Transaction();
                         transaction.setMonthCounter(i);
                         transaction.setFund(fund);
                         member.addTransaction(transaction);
                     }
                     member.addFund(fund);
-                    Member savedMember = memberRepository.save(member);
+                    memberRepository.save(member);
                 }
             }
         }
@@ -79,13 +80,53 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    public List<MemberDTO> getMemberTransactionDetails(Long memberId) {
+        Optional<Member> memberOptional = memberRepository.findById(memberId);
+        Member member = memberOptional.orElseThrow(() -> new CustomException(String.format(AdminAppConstant.MEMBER_NOT_FOUND, AdminAppConstant.MEMBER_ID, memberId)));
+        Set<Transaction> transactions = member.getTransactions();
+
+        return transactions
+                .stream()
+                .collect(Collectors.groupingBy(
+                        transaction -> transaction.getFund().getFundId(),
+                        Collectors.reducing(
+                                BigDecimal.ZERO,
+                                transaction -> transaction.getLoanBorrowed().subtract(transaction.getLoanReturned()),
+                                BigDecimal::add)
+                )).entrySet()
+                .stream()
+                .map(entry -> {
+                    MemberDTO memberDTO = new MemberDTO();
+                    memberDTO.setFundId(entry.getKey());
+                    memberDTO.setTotalLoan(entry.getValue());
+                    BigDecimal totalInterest = transactions.stream()
+                            .filter(t -> t.getFund().getFundId().equals(entry.getKey())
+                                    && t.getIsInterestAmtPaid().equals('Y'))
+                            .map(Transaction::getInterestAmount)
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+                    memberDTO.setTotalInterest(totalInterest);
+                    final BigDecimal[] totalPrincipal = {BigDecimal.ZERO};
+                    transactions.forEach(t -> {
+                        Fund fund = t.getFund();
+                        if (fund.getFundId().equals(entry.getKey())
+                                && t.getIsPrincipalAmtPaid().equals('Y')) {
+                            totalPrincipal[0] = totalPrincipal[0].add(fund.getMonthlyInstallment());
+                        }
+                    });
+                    memberDTO.setTotalPrincipal(totalPrincipal[0]);
+                    return memberDTO;
+                }).collect(Collectors.toList());
+    }
+
+
+    @Override
     public Set<Member> getMembersByFundId(Long fundId) {
 
-         Set<Member> members = fundRepository.findMembersByFundId(fundId);
-         if(members.isEmpty()){
-             throw new CustomException(String.format(AdminAppConstant.MEMBER_NOT_FOUND,AdminAppConstant.FUND_ID,fundId));
+         Optional<Fund> fund = fundRepository.findById(fundId);
+         if(fund.isEmpty()){
+             throw new CustomException(String.format(AdminAppConstant.FUND_NOT_FOUND,AdminAppConstant.FUND_ID,fundId));
          }
-         return members;
+         return fund.get().getMembers();
     }
 
     @Override

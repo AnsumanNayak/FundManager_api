@@ -13,5 +13,5 @@ import java.util.List;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction,Long> {
-
+    List<Transaction> findByFund_FundIdAndMember_MemberIdAndMonthCounterGreaterThan(Long fundId, Long memberId, Integer monthCounter);
 }

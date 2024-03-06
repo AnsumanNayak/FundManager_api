@@ -16,7 +16,6 @@ public class TransactionMapper {
         this.modelMapper = modelMapper;
         this.modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         TypeMap<Transaction, TransactionDTO> typeMap = modelMapper.createTypeMap(Transaction.class, TransactionDTO.class);
-
         // Custom mappings
         typeMap.addMapping(src -> src.getFund().getFundId(), TransactionDTO::setFundId);
         typeMap.addMapping(src -> src.getMember().getMemberId(), TransactionDTO::setMemberId);

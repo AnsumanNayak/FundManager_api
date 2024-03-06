@@ -9,10 +9,7 @@ import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -26,40 +23,19 @@ public class Member {
     @Column(name = "member_name", nullable = false)
     private String name;
 
-    @Column(name = "total_loan")
-    private BigDecimal totalLoan = BigDecimal.ZERO;
-
-    @Column(name = "total_interest")
-    private BigDecimal totalInterest = BigDecimal.ZERO;
-
-    @Column(name = "total_principal")
-    private Integer totalPrincipal = 0;
-
     @Column(name = "eff_begin_dt")
     private LocalDate effBeginDt;
 
     @Column(name = "eff_end_dt")
     private LocalDate effEndDt;
-/*
-    @Column(name = "fundId")
-    private Long fundId;*/
-/*
-    @ManyToOne
-    @JoinColumn(name = "fund_id",nullable = false)
-    private Fund fund;*/
-/*
-    @ManyToMany
-    @JoinTable(
-            name = "member_fund",
-            joinColumns = @JoinColumn(name = "member_id"),
-            inverseJoinColumns = @JoinColumn(name = "fund_id")
-    )*/
 
-    @ManyToMany(mappedBy = "members", cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
+    @JsonIgnore
+    @ManyToMany(mappedBy = "members", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Set<Fund> funds = new HashSet<>();
 
     @Column(name = "member_gender")
     private String gender;
+
 
     @Column(name = "member_address")
     private String address;
@@ -75,9 +51,6 @@ public class Member {
 
     @Column(name = "member_aadharNum")
     private Long aadharNum;
-/*
-    @Transient
-    private int fundTenure;*/
 
     @JsonIgnore
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
@@ -99,4 +72,17 @@ public class Member {
         funds.add(fund);
         fund.getMembers().add(this);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Member member)) return false;
+        return Objects.equals(getMemberId(), member.getMemberId()) && Objects.equals(getName(), member.getName()) && Objects.equals(getDob(), member.getDob()) && Objects.equals(getAadharNum(), member.getAadharNum());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getMemberId(), getName(), getDob(), getAadharNum());
+    }
+
 }

@@ -53,7 +53,10 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Transaction getTransactionById(Long transactionId) {
-        return transactionRepository.findById(transactionId).orElse(null);
+        return transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new CustomException(String.format(AdminAppConstant.TRANSACTION_NOT_FOUND,
+                        AdminAppConstant.TRANSACTION_ID,
+                        transactionId)));
     }
 
     @Override
@@ -65,12 +68,14 @@ public class TransactionServiceImpl implements TransactionService {
     public Transaction updatePrincipalAmtFlag(Long transactionId, Character isPrincipalAmtPaid) {
         Optional<Transaction> transactionOptional = transactionRepository.findById(transactionId);
         if(transactionOptional.isPresent()){
-            Transaction transaction =transactionRepository.save(transactionOptional.get());
+            Transaction transaction =transactionOptional.get();
             transaction.setIsPrincipalAmtPaid(isPrincipalAmtPaid);
             return transactionRepository.save(transaction);
         }
         else {
-            throw new CustomException("No record found for the transaction id: "+transactionId);
+            throw new CustomException(String.format(AdminAppConstant.TRANSACTION_NOT_FOUND,
+                    AdminAppConstant.TRANSACTION_ID,
+                    transactionId));
         }
     }
 
@@ -78,41 +83,50 @@ public class TransactionServiceImpl implements TransactionService {
     public Transaction updateInterestAmtFlag(Long transactionId, Character isInterestAmtPaid) {
         Optional<Transaction> transactionOptional = transactionRepository.findById(transactionId);
         if(transactionOptional.isPresent()){
-            Transaction transaction = transactionRepository.save(transactionOptional.get());
+            Transaction transaction = transactionOptional.get();
             transaction.setIsPrincipalAmtPaid(isInterestAmtPaid);
             return transactionRepository.save(transaction);
         }
         else {
-            throw new CustomException("No record found for the transaction id: "+transactionId);
+            throw new CustomException(String.format(AdminAppConstant.TRANSACTION_NOT_FOUND,
+                    AdminAppConstant.TRANSACTION_ID,
+                    transactionId));
         }
     }
 
     @Override
     @Transactional
     public Transaction updateLoanAndInterest(TransactionDTO transactionDTO) {
-        BigDecimal totalLoan = transactionDTO.getTotalLoan();
+        Optional<Transaction> transactionOptional = transactionRepository.findById(transactionDTO.getTransactionId());
+        Transaction transaction = transactionOptional
+                .orElseThrow(() -> new CustomException(String.format(AdminAppConstant.TRANSACTION_NOT_FOUND,
+                        AdminAppConstant.TRANSACTION_ID, transactionDTO.getTransactionId())));
+        BigDecimal totalLoan = transaction.getTotalLoan()
+                        .add(transaction.getLoanReturned()
+                        .subtract(transaction.getLoanBorrowed()));
         BigDecimal loanBorrowed = transactionDTO.getLoanBorrowed();
         BigDecimal loanReturned = transactionDTO.getLoanReturned();
+        if(loanReturned.compareTo(totalLoan) > 0){
+            throw new CustomException(AdminAppConstant.LOAN_IS_LESS);
+        }
         BigDecimal updatedTotalLoan = totalLoan.add(loanBorrowed).subtract(loanReturned);
-        BigDecimal updatedInterestAmount = updatedTotalLoan.multiply(transactionDTO.getInterestAmount().divide(BigDecimal.valueOf(100)));
-        Transaction transactionEntity = mapper.mapDTOToEntity(transactionDTO);
-        transactionEntity.setLoanBorrowed(loanBorrowed);
-        transactionEntity.setLoanReturned(loanReturned);
-        transactionEntity.setTotalLoan(updatedTotalLoan);
-        Transaction transaction= transactionRepository.save(transactionEntity);
-        Optional<Fund> fund =fundRepository.findById(transactionDTO.getFundId());
-        if(fund.isEmpty())
-            throw new CustomException(String.format(AdminAppConstant.FUND_NOT_FOUND,AdminAppConstant.FUND_ID,transactionDTO.getFundId()));
-        Optional<Member> member =fund.get().getMembers().stream().filter(e -> e.getMemberId().equals(transactionDTO.getMemberId())).findFirst();
-        if(member.isEmpty())
-            throw new CustomException(String.format(AdminAppConstant.MEMBER_NOT_FOUND,AdminAppConstant.MEMBER_ID,transactionDTO.getMemberId()));
-        transactionRepository.saveAll(member.get()
-                .getTransactions()
+
+        BigDecimal updatedInterestAmount = updatedTotalLoan.multiply(transaction.getFund().getMonthlyInterestRate().divide(BigDecimal.valueOf(100)));
+
+        transaction.setLoanBorrowed(loanBorrowed);
+        transaction.setLoanReturned(loanReturned);
+        transaction.setTotalLoan(updatedTotalLoan);
+        List<Transaction> updateTransactions = transactionRepository
+                .findByFund_FundIdAndMember_MemberIdAndMonthCounterGreaterThan(transaction.getFund().getFundId()
+                        ,transaction.getMember().getMemberId()
+                        ,transaction.getMonthCounter())
                 .stream()
-                .filter(e -> e.getMonthCounter()
-                        .compareTo(transactionDTO.getMonthCounter()) > 0)
-                .peek(e-> e.setInterestAmount(updatedInterestAmount)).collect(Collectors.toList()));
-        return transaction;
+                .peek(e ->{
+                    e.setInterestAmount(updatedInterestAmount);
+                    e.setTotalLoan(updatedTotalLoan);
+                }).collect(Collectors.toList());
+        transactionRepository.saveAll(updateTransactions);
+        return transactionRepository.save(transaction);
     }
 
     @Override

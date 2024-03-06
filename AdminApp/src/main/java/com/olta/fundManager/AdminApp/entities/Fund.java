@@ -91,4 +91,17 @@ public class Fund {
         transactions.add(transaction);
         transaction.setFund(this);
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Fund fund)) return false;
+        return Objects.equals(getFundId(), fund.getFundId()) && Objects.equals(getFundName(), fund.getFundName()) && Objects.equals(getAdminId(), fund.getAdminId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getFundId(), getFundName(), getAdminId());
+    }
 }

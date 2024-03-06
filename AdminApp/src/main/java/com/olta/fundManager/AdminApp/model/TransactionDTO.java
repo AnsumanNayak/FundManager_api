@@ -1,5 +1,7 @@
 package com.olta.fundManager.AdminApp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,7 +10,10 @@ import lombok.Data;
 import java.math.BigDecimal;
 
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class TransactionDTO {
+
+    private Long transactionId;
 
     private Long fundId;
 

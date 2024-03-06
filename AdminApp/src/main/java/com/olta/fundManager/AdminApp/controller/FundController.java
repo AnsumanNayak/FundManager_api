@@ -1,16 +1,15 @@
 package com.olta.fundManager.AdminApp.controller;
 
+import com.olta.fundManager.AdminApp.entities.Member;
 import com.olta.fundManager.AdminApp.exception.CustomException;
 import com.olta.fundManager.AdminApp.entities.Fund;
-import com.olta.fundManager.AdminApp.model.ApiResponse;
 import com.olta.fundManager.AdminApp.service.FundService;
 import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/funds")
@@ -29,25 +28,20 @@ public class FundController {
         return fundService.getFundById(fundId);
     }
 
-    @GetMapping("/admins/{adminId}")
-    public ResponseEntity<ApiResponse<Object>> getFundByAdminId(@Nonnull @PathVariable Integer adminId) {
-        List<Fund> funds= fundService.getFundByAdminId(adminId);
-        if(funds.isEmpty())
-            throw new CustomException("No funds found under the admin Id: "+adminId);
-        return new ResponseEntity<>(ApiResponse.builder()
-                .data(funds)
-                .success(true).build(), HttpStatus.FOUND);
+    @GetMapping("/admins")
+    public List<Fund> getFundByAdminId(@RequestParam("adminId") Integer adminId) {
+        return fundService.getFundByAdminId(adminId);
     }
-
-
+    @PostMapping("/{fundId}/members")
+    public Set<Member> addMembersToFund(@Nonnull @RequestBody List<Member> members,@PathVariable Long fundId){
+        return fundService.addMembersToFund(members,fundId);
+    }
     @PostMapping
-    public ResponseEntity<ApiResponse<Object>> saveFund(@Nonnull @RequestBody Fund fund) {
+    public Fund saveFund(@Nonnull @RequestBody Fund fund) {
         if(null == fund.getAdminId()){
             throw new CustomException("Admin Id is mandatory to create a new fund.");
         }
-        return new ResponseEntity<>(ApiResponse.builder()
-                .data(fundService.saveFund(fund))
-                .success(true).build(), HttpStatus.CREATED);
+        return fundService.saveFund(fund);
     }
 
     @DeleteMapping("/{fundId}")

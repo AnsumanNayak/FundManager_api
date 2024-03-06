@@ -1,5 +1,6 @@
 package com.olta.fundManager.AdminApp.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -43,10 +44,12 @@ public class Transaction {
     @Column(name = "total_loan ")
     private BigDecimal totalLoan = BigDecimal.ZERO;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "fund_id")
     private Fund fund;

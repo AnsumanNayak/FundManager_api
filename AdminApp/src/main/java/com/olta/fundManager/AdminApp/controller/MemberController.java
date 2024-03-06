@@ -21,6 +21,11 @@ public class MemberController {
         return memberService.getAllMembers();
     }
 
+    @GetMapping("/transactions/{memberId}")
+    public List<MemberDTO> getMemberTransactionDetails(@PathVariable Long memberId) {
+        return memberService.getMemberTransactionDetails(memberId);
+    }
+
     @GetMapping("/{memberId}")
     public Member getMemberById(@PathVariable Long memberId) {
         return memberService.getMemberById(memberId);
