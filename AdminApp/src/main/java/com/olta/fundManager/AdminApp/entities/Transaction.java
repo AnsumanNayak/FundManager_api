@@ -21,7 +21,7 @@ public class Transaction {
     private Long transactionId;
 
 	@Column(name = "is_principalAmt_paid")
-    private Character isPrincipalAmtPaid = 'N';
+    private Boolean isPrincipalAmtPaid = Boolean.FALSE;
 
 	@Column(name = "month_year")
     private String monthYear;
@@ -33,7 +33,7 @@ public class Transaction {
     private BigDecimal interestAmount = BigDecimal.ZERO;
 
     @Column(name = "is_interestAmt_paid")
-    private Character isInterestAmtPaid = 'N';
+    private Boolean isInterestAmtPaid = Boolean.FALSE;
 
     @Column(name = "loan_returned")
     private BigDecimal loanReturned = BigDecimal.ZERO;

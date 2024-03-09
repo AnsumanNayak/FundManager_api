@@ -7,7 +7,6 @@ import org.modelmapper.TypeMap;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.stereotype.Component;
 
-import java.util.stream.Collectors;
 @Component
 public class TransactionMapper {
     private final ModelMapper modelMapper;
@@ -19,7 +18,7 @@ public class TransactionMapper {
         // Custom mappings
         typeMap.addMapping(src -> src.getFund().getFundId(), TransactionDTO::setFundId);
         typeMap.addMapping(src -> src.getMember().getMemberId(), TransactionDTO::setMemberId);
-        typeMap.addMapping(src -> src.getMember().getName(), TransactionDTO::setMemberName);
+        typeMap.addMapping(src -> src.getMember().getName(), TransactionDTO::setName);
 
     }
 

@@ -1,10 +1,7 @@
 package com.olta.fundManager.AdminApp.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -19,9 +16,10 @@ public class TransactionDTO {
 
     private Long memberId;
 
-    private String memberName;
+    private String name;
 
-    private Character isPrincipalAmtPaid = 'N';
+    @JsonProperty(value = "isPrincipalAmtPaid")
+    private boolean isPrincipalAmtPaid = false;
 
     private String monthYear;
 
@@ -29,7 +27,8 @@ public class TransactionDTO {
 
     private BigDecimal interestAmount=BigDecimal.ZERO;
 
-    private Character isInterestAmtPaid = 'N';
+    @JsonProperty(value = "isInterestAmtPaid")
+    private boolean isInterestAmtPaid = false;
 
     private BigDecimal loanReturned=BigDecimal.ZERO;
 

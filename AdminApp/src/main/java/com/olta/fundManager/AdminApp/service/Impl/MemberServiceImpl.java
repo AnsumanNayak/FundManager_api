@@ -101,7 +101,7 @@ public class MemberServiceImpl implements MemberService {
                     memberDTO.setTotalLoan(entry.getValue());
                     BigDecimal totalInterest = transactions.stream()
                             .filter(t -> t.getFund().getFundId().equals(entry.getKey())
-                                    && t.getIsInterestAmtPaid().equals('Y'))
+                                    && t.getIsInterestAmtPaid())
                             .map(Transaction::getInterestAmount)
                             .reduce(BigDecimal.ZERO, BigDecimal::add);
                     memberDTO.setTotalInterest(totalInterest);
@@ -109,7 +109,7 @@ public class MemberServiceImpl implements MemberService {
                     transactions.forEach(t -> {
                         Fund fund = t.getFund();
                         if (fund.getFundId().equals(entry.getKey())
-                                && t.getIsPrincipalAmtPaid().equals('Y')) {
+                                && t.getIsPrincipalAmtPaid()) {
                             totalPrincipal[0] = totalPrincipal[0].add(fund.getMonthlyInstallment());
                         }
                     });

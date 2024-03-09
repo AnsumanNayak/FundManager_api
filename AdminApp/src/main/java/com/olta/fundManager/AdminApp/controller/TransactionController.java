@@ -4,11 +4,7 @@ package com.olta.fundManager.AdminApp.controller;
 import com.olta.fundManager.AdminApp.entities.Transaction;
 import com.olta.fundManager.AdminApp.mapper.TransactionMapper;
 import com.olta.fundManager.AdminApp.model.TransactionDTO;
-import com.olta.fundManager.AdminApp.repository.TransactionDetails;
 import com.olta.fundManager.AdminApp.service.TransactionService;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
-import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +13,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/transactions")
+@CrossOrigin
 public class TransactionController {
 
     @Autowired
@@ -43,12 +40,12 @@ public class TransactionController {
 
     @GetMapping("/updatePrincipalAmtFlag")
     public Transaction updatePrincipalAmtFlag(@RequestParam(name = "transactionId", required = true) Long transactionId
-            , @RequestParam(name = "isPrincipalAmtPaid", required = true) Character isPrincipalAmtPaid) {
+            , @RequestParam(name = "isPrincipalAmtPaid", required = true) boolean isPrincipalAmtPaid) {
         return transactionService.updatePrincipalAmtFlag(transactionId,isPrincipalAmtPaid);
     }
     @GetMapping("/updateInterestAmtFlag")
     public Transaction updateInterestAmtFlag(@RequestParam(name = "transactionId", required = true) Long transactionId
-            , @RequestParam(name = "isPrincipalAmtPaid", required = true) Character isInterestAmtPaid) {
+            , @RequestParam(name = "isPrincipalAmtPaid", required = true) boolean isInterestAmtPaid) {
         return transactionService.updateInterestAmtFlag(transactionId,isInterestAmtPaid);
     }
 

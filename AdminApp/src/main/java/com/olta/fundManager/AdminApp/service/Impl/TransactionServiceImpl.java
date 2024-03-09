@@ -65,7 +65,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Transaction updatePrincipalAmtFlag(Long transactionId, Character isPrincipalAmtPaid) {
+    public Transaction updatePrincipalAmtFlag(Long transactionId, boolean isPrincipalAmtPaid) {
         Optional<Transaction> transactionOptional = transactionRepository.findById(transactionId);
         if(transactionOptional.isPresent()){
             Transaction transaction =transactionOptional.get();
@@ -80,7 +80,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Transaction updateInterestAmtFlag(Long transactionId, Character isInterestAmtPaid) {
+    public Transaction updateInterestAmtFlag(Long transactionId, boolean isInterestAmtPaid) {
         Optional<Transaction> transactionOptional = transactionRepository.findById(transactionId);
         if(transactionOptional.isPresent()){
             Transaction transaction = transactionOptional.get();

@@ -14,4 +14,5 @@ public class AdminAppConfiguration {
     public ModelMapper modelMapperBean() {
         return new ModelMapper();
     }
+
 }
