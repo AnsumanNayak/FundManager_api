@@ -45,7 +45,7 @@ public class TransactionController {
     }
     @GetMapping("/updateInterestAmtFlag")
     public Transaction updateInterestAmtFlag(@RequestParam(name = "transactionId", required = true) Long transactionId
-            , @RequestParam(name = "isPrincipalAmtPaid", required = true) boolean isInterestAmtPaid) {
+            , @RequestParam(name = "isInterestAmtPaid", required = true) boolean isInterestAmtPaid) {
         return transactionService.updateInterestAmtFlag(transactionId,isInterestAmtPaid);
     }
 
