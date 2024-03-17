@@ -3,6 +3,7 @@ package com.olta.fundManager.AdminApp.controller;
 import com.olta.fundManager.AdminApp.entities.Member;
 import com.olta.fundManager.AdminApp.exception.CustomException;
 import com.olta.fundManager.AdminApp.entities.Fund;
+import com.olta.fundManager.AdminApp.model.FundDTO;
 import com.olta.fundManager.AdminApp.service.FundService;
 import jakarta.annotation.Nonnull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class FundController {
     }
 
     @GetMapping("/admins")
-    public List<Fund> getFundByAdminId(@RequestParam("adminId") Integer adminId) {
+    public List<FundDTO> getFundByAdminId(@RequestParam("adminId") Integer adminId) {
         return fundService.getFundByAdminId(adminId);
     }
     @PostMapping("/{fundId}/members")

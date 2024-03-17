@@ -50,8 +50,8 @@ public class Fund {
     @Column(name = "eff_end_dt")
     private LocalDate effEndDt;
 
-    @Column(name = "total_members")
-    private Integer totalMembers = 0;
+//    @Column(name = "total_members")
+//    private Integer totalMembers = 0;
 
     @Column(name = "meeting_day")
     private Integer meetingDay = 1;

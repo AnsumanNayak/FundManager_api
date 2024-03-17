@@ -19,6 +19,7 @@ public class TransactionMapper {
         typeMap.addMapping(src -> src.getFund().getFundId(), TransactionDTO::setFundId);
         typeMap.addMapping(src -> src.getMember().getMemberId(), TransactionDTO::setMemberId);
         typeMap.addMapping(src -> src.getMember().getName(), TransactionDTO::setName);
+        typeMap.addMapping(src -> src.getFund().getMonthlyInstallment(), TransactionDTO::setMonthlyInstallment);
 
     }
 

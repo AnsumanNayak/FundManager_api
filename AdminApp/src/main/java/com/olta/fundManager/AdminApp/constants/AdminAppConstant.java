@@ -10,4 +10,5 @@ public class AdminAppConstant {
     public static final String MEMBER_ID = "member id";
     public static final String TRANSACTION_ID = "transaction id";
     public static final String MEMBER_ALREADY_EXIST = "Member is already exist";
+    public static final String FUND_ALREADY_EXIST = "Fund name is already exist";
 }

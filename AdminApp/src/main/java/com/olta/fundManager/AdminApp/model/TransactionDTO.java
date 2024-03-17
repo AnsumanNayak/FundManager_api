@@ -36,4 +36,6 @@ public class TransactionDTO {
 
     private BigDecimal totalLoan=BigDecimal.ZERO;
 
+    private BigDecimal monthlyInstallment = BigDecimal.ZERO;
+
 }
