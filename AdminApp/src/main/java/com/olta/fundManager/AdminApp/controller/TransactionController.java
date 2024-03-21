@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/transactions")
-@CrossOrigin
+//@CrossOrigin
 public class TransactionController {
 
     @Autowired

@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.util.CollectionUtils;
 
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ import java.util.*;
 @Table(name = "member")
 public class Member {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
     private Long memberId;
 
@@ -24,7 +26,7 @@ public class Member {
     private String name;
 
     @Column(name = "eff_begin_dt")
-    private LocalDate effBeginDt;
+    private LocalDate effBeginDt = LocalDate.now();
 
     @Column(name = "eff_end_dt")
     private LocalDate effEndDt;
@@ -41,6 +43,7 @@ public class Member {
     private String address;
 
     @Column(name = "member_dob")
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate dob;
 
     @Column(name = "member_phnNum")

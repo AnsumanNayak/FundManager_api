@@ -38,7 +38,7 @@ public class FundController {
         return fundService.addMembersToFund(members,fundId);
     }
     @PostMapping
-    public Fund saveFund(@Nonnull @RequestBody Fund fund) {
+    public Fund saveFund(@Nonnull @RequestBody FundDTO fund) {
         if(null == fund.getAdminId()){
             throw new CustomException("Admin Id is mandatory to create a new fund.");
         }

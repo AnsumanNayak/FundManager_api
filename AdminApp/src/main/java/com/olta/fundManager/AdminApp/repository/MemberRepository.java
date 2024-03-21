@@ -10,5 +10,5 @@ import java.util.Set;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member,Long> {
-    Set<Member> findByNameAndDob(String name, LocalDate dob);
+    Set<Member> findByNameContainingAndDob(String name, LocalDate dob);
 }

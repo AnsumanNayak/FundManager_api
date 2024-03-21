@@ -3,6 +3,7 @@ package com.olta.fundManager.AdminApp.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -38,7 +39,7 @@ public class MemberDTO {
 
     private String address;
 
-
+    @DateTimeFormat(pattern = "dd/MM/yyyy")
     private LocalDate dob;
 
 

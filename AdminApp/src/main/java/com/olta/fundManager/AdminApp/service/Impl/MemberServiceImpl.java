@@ -7,13 +7,10 @@ import com.olta.fundManager.AdminApp.entities.Member;
 import com.olta.fundManager.AdminApp.entities.Transaction;
 import com.olta.fundManager.AdminApp.exception.CustomException;
 import com.olta.fundManager.AdminApp.mapper.MemberMapper;
-import com.olta.fundManager.AdminApp.mapper.TransactionMapper;
 import com.olta.fundManager.AdminApp.model.MemberDTO;
-import com.olta.fundManager.AdminApp.model.TransactionDTO;
 import com.olta.fundManager.AdminApp.repository.FundRepository;
 import com.olta.fundManager.AdminApp.repository.MemberRepository;
 import com.olta.fundManager.AdminApp.service.MemberService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,15 +43,17 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public Set<Member> saveMember(List<MemberDTO> members) {
+        Set<Member> membersResp = new HashSet<>();
         Fund fund = null;
+        boolean isMemberUpdated = false;
         for (MemberDTO dto : members) {
-            if (!this.isExistingMember(dto)) {
-                Long memberId = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+            if (Objects.isNull(dto.getMemberId()) && !this.isExistingMember(dto)) {
+//                Long memberId = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
                 for (Long fundId : dto.getFundIds()) {
                     fund = fundRepository.findById(fundId).orElseThrow(() -> new CustomException(String.format(AdminAppConstant.FUND_NOT_FOUND, AdminAppConstant.FUND_ID, fundId)));
 
                     Member member = mapper.mapDTOToEntity(dto);
-                    member.setMemberId(memberId);
+//                    member.setMemberId(memberId);
 
 
                     for (int i = 1; i <= fund.getTenure(); i++) {
@@ -66,12 +65,21 @@ public class MemberServiceImpl implements MemberService {
                     member.addFund(fund);
                     memberRepository.save(member);
                 }
+            } else if (Objects.nonNull(dto.getMemberId())) {
+                isMemberUpdated = true;
+                Member member = memberRepository.findById(dto.getMemberId()).orElseThrow(() -> new CustomException(String.format(AdminAppConstant.MEMBER_NOT_FOUND,AdminAppConstant.MEMBER_ID,dto.getMemberId())));
+                mapper.updateEntity(member,dto);
+                membersResp.add(memberRepository.save(member));
             }
         }
-        if(Objects.isNull(fund)){
+        if(!isMemberUpdated && Objects.isNull(fund)){
             throw new CustomException(AdminAppConstant.MEMBER_ALREADY_EXIST);
         }
-        return fundRepository.save(fund).getMembers();
+        else if(Objects.nonNull(fund)){
+            return fundRepository.save(fund).getMembers();
+        }else {
+            return membersResp;
+        }
     }
 
     @Override
@@ -131,7 +139,17 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public boolean isExistingMember(MemberDTO memberDTO) {
-        return !memberRepository.findByNameAndDob(memberDTO.getName(),memberDTO.getDob()).isEmpty();
+        return !memberRepository.findByNameContainingAndDob(memberDTO.getName(),memberDTO.getDob()).isEmpty();
+    }
+
+    @Override
+    public Set<Member> getAllMembersByAdminId(Integer adminId) {
+        Set<Member> members = new HashSet<>();
+        List<Fund> funds = fundRepository.findByAdminId(adminId);
+        funds.forEach(fund -> {
+                members.addAll(fund.getMembers());
+        });
+        return members;
     }
 
 }

@@ -1,9 +1,7 @@
 package com.olta.fundManager.AdminApp.mapper;
 
 import com.olta.fundManager.AdminApp.entities.Fund;
-import com.olta.fundManager.AdminApp.entities.Transaction;
 import com.olta.fundManager.AdminApp.model.FundDTO;
-import com.olta.fundManager.AdminApp.model.TransactionDTO;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeMap;
 import org.modelmapper.convention.MatchingStrategies;
@@ -26,4 +24,8 @@ public class FundMapper {
     public Fund mapDTOToEntity(FundDTO fundDTO) {
         return modelMapper.map(fundDTO, Fund.class);
     }
+    public void updateEntity(Fund entity, FundDTO entityDTO) {
+        modelMapper.map(entityDTO, entity);
+    }
+
 }

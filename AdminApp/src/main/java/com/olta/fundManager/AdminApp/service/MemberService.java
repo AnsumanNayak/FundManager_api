@@ -3,7 +3,6 @@ package com.olta.fundManager.AdminApp.service;
 
 import com.olta.fundManager.AdminApp.entities.Member;
 import com.olta.fundManager.AdminApp.model.MemberDTO;
-import com.olta.fundManager.AdminApp.model.TransactionDTO;
 
 import java.util.List;
 import java.util.Set;
@@ -19,4 +18,6 @@ public interface MemberService {
     public Set<Member> getMembersByFundId(Long fundId);
 
     boolean isExistingMember(MemberDTO memberDTO);
+
+    Set<Member> getAllMembersByAdminId(Integer adminId);
 }

@@ -76,6 +76,10 @@ public class Fund {
     @OneToMany(mappedBy = "fund", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Transaction> transactions;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "fund", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    private List<TransactionVerification> transactionVerifications;
+
     public void addMember(Member member){
         if(CollectionUtils.isEmpty(members)){
             members = new HashSet<>();
@@ -90,6 +94,14 @@ public class Fund {
         }
         transactions.add(transaction);
         transaction.setFund(this);
+    }
+
+    public void addTransactionVerification(TransactionVerification transactionVerification){
+        if(CollectionUtils.isEmpty(transactionVerifications)){
+            transactionVerifications = new ArrayList<>();
+        }
+        transactionVerifications.add(transactionVerification);
+        transactionVerification.setFund(this);
     }
 
 
