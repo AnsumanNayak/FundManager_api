@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://dpg-cnuspool5elc73atc9d0-a.singapore-postgres.render.com:5432/olta
+    username: fund_manager
+    password: yN9QC5VxQoxVVHZ9HLwa0MQGrjyuq0P0
+
+

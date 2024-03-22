@@ -11,7 +11,7 @@ import java.util.List;
 public interface TransactionService {
     public List<Transaction> getAllTransactions();
 
-    public List<TransactionDTO> getAllTransactions(Integer monthYear, Long fundId);
+    public List<TransactionDTO> getAllTransactions(Integer monthCounter, Long fundId);
     public Transaction getTransactionById(Long transactionId);
     public Transaction saveTransaction(Transaction transaction);
     public Transaction updatePrincipalAmtFlag(Long transactionId, boolean isPrincipalAmtPaid);

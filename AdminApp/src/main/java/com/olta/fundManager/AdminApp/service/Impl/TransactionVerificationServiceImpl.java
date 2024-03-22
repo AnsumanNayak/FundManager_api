@@ -18,13 +18,13 @@ public class TransactionVerificationServiceImpl implements TransactionVerificati
     @Override
     public List<FundVerificationDTO> getAllFundsWithVerifications(Integer adminId) {
         List<FundVerificationDTO> fundVerificationDTOS = new ArrayList<>();
-        List<TransactionVerificationDTO> transactionVerificationDTOS = new ArrayList<>();
         List<Fund> funds = fundRepository.findByAdminId(adminId);
         funds.forEach(fund -> {
             FundVerificationDTO fundVerificationDTO = new FundVerificationDTO();
             fundVerificationDTO.setFundId(fund.getFundId());
             fundVerificationDTO.setFundName(fund.getFundName());
             fundVerificationDTO.setMeetingDay(fund.getMeetingDay());
+            List<TransactionVerificationDTO> transactionVerificationDTOS = new ArrayList<>();
             fund.getTransactionVerifications().forEach(transactionVerification -> {
                 TransactionVerificationDTO transactionVerificationDTO = new TransactionVerificationDTO();
                 transactionVerificationDTO.setVerification(transactionVerification.getVerification());

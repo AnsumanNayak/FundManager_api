@@ -106,7 +106,7 @@ public class TransactionServiceImpl implements TransactionService {
                         .subtract(transaction.getLoanBorrowed()));
         BigDecimal loanBorrowed = transactionDTO.getLoanBorrowed();
         BigDecimal loanReturned = transactionDTO.getLoanReturned();
-        if(loanReturned.compareTo(totalLoan) > 0){
+        if(loanReturned.compareTo(totalLoan.add(loanBorrowed)) > 0){
             throw new CustomException(AdminAppConstant.LOAN_IS_LESS);
         }
         BigDecimal updatedTotalLoan = totalLoan.add(loanBorrowed).subtract(loanReturned);

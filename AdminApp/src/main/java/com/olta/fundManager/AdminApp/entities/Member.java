@@ -31,7 +31,7 @@ public class Member {
     @Column(name = "eff_end_dt")
     private LocalDate effEndDt;
 
-    @JsonIgnore
+//    @JsonIgnore
     @ManyToMany(mappedBy = "members", cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Set<Fund> funds = new HashSet<>();
 
@@ -72,8 +72,9 @@ public class Member {
         if(CollectionUtils.isEmpty(funds)){
             funds = new HashSet<>();
         }
-        funds.add(fund);
         fund.getMembers().add(this);
+        funds.add(fund);
+
     }
 
     @Override

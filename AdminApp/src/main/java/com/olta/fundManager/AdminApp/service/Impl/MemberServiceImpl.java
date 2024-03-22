@@ -47,14 +47,11 @@ public class MemberServiceImpl implements MemberService {
         Fund fund = null;
         boolean isMemberUpdated = false;
         for (MemberDTO dto : members) {
+            Member member = null;
             if (Objects.isNull(dto.getMemberId()) && !this.isExistingMember(dto)) {
-//                Long memberId = UUID.randomUUID().getMostSignificantBits() & Long.MAX_VALUE;
+                member = mapper.mapDTOToEntity(dto);
                 for (Long fundId : dto.getFundIds()) {
                     fund = fundRepository.findById(fundId).orElseThrow(() -> new CustomException(String.format(AdminAppConstant.FUND_NOT_FOUND, AdminAppConstant.FUND_ID, fundId)));
-
-                    Member member = mapper.mapDTOToEntity(dto);
-//                    member.setMemberId(memberId);
-
 
                     for (int i = 1; i <= fund.getTenure(); i++) {
                         Transaction transaction = new Transaction();
@@ -63,11 +60,11 @@ public class MemberServiceImpl implements MemberService {
                         member.addTransaction(transaction);
                     }
                     member.addFund(fund);
-                    memberRepository.save(member);
                 }
+                memberRepository.save(member);
             } else if (Objects.nonNull(dto.getMemberId())) {
                 isMemberUpdated = true;
-                Member member = memberRepository.findById(dto.getMemberId()).orElseThrow(() -> new CustomException(String.format(AdminAppConstant.MEMBER_NOT_FOUND,AdminAppConstant.MEMBER_ID,dto.getMemberId())));
+                member = memberRepository.findById(dto.getMemberId()).orElseThrow(() -> new CustomException(String.format(AdminAppConstant.MEMBER_NOT_FOUND,AdminAppConstant.MEMBER_ID,dto.getMemberId())));
                 mapper.updateEntity(member,dto);
                 membersResp.add(memberRepository.save(member));
             }

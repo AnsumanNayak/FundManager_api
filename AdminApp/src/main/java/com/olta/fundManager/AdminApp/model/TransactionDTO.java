@@ -19,7 +19,7 @@ public class TransactionDTO {
     private String name;
 
     @JsonProperty(value = "isPrincipalAmtPaid")
-    private boolean isPrincipalAmtPaid = false;
+    private Boolean isPrincipalAmtPaid;
 
     private String monthYear;
 
@@ -28,7 +28,7 @@ public class TransactionDTO {
     private BigDecimal interestAmount=BigDecimal.ZERO;
 
     @JsonProperty(value = "isInterestAmtPaid")
-    private boolean isInterestAmtPaid = false;
+    private Boolean isInterestAmtPaid;
 
     private BigDecimal loanReturned=BigDecimal.ZERO;
 

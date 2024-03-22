@@ -25,7 +25,7 @@ public class MemberDTO {
     private BigDecimal totalPrincipal = BigDecimal.ZERO;
 
 
-    private LocalDate effBeginDt;
+    private LocalDate effBeginDt = LocalDate.now();
 
 
     private LocalDate effEndDt;
